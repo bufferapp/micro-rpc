@@ -1,10 +1,14 @@
 const micro = require('micro');
 const { send, json } = micro;
 
-const server = micro(async (req, res) => {
-  const data = await json(req);
-  console.log('data', data);
-  send(res, 200, 'ok');
-});
-
-server.listen(3000);
+module.exports = () => {
+  const methods = {};
+  return {
+    server: micro(async (req, res) => {
+      const data = await json(req);
+      const { name, args } = data;
+      send(res, 200, { result: methods[name](...JSON.parse(args)) });
+    }),
+    method: (name, fn) => methods[name] = fn,
+  };
+};
