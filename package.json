@@ -1,0 +1,23 @@
+{
+  "name": "micro-rpc",
+  "version": "0.0.1",
+  "description": "Super lightweight rpc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bufferapp/micro-rpc.git"
+  },
+  "keywords": [
+    "micro",
+    "rpc"
+  ],
+  "author": "Harrison Harnisch <hharnisc@gmail.com> (http://hharnisc.github.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bufferapp/micro-rpc/issues"
+  },
+  "homepage": "https://github.com/bufferapp/micro-rpc#readme"
+}
