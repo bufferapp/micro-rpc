@@ -7,7 +7,11 @@ module.exports = () => {
     server: micro(async (req, res) => {
       const data = await json(req);
       const { name, args } = data;
-      send(res, 200, { result: methods[name](...JSON.parse(args)) });
+      const parsedArgs = JSON.parse(args);
+      const result = Array.isArray(parsedArgs) ?
+        await methods[name](...parsedArgs) :
+        await methods[name](parsedArgs);
+      send(res, 200, { result });
     }),
     method: (name, fn) => methods[name] = fn,
   };
