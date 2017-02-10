@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/bufferapp/micro-rpc/issues"
   },
-  "homepage": "https://github.com/bufferapp/micro-rpc#readme"
+  "homepage": "https://github.com/bufferapp/micro-rpc#readme",
+  "dependencies": {
+    "micro": "^7.0.6"
+  }
 }
