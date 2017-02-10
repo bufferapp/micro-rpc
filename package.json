@@ -4,6 +4,7 @@
   "description": "Super lightweight rpc",
   "main": "index.js",
   "scripts": {
+    "start": "node --harmony-async-await index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
