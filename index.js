@@ -12,6 +12,9 @@ module.exports = () => {
     server: micro(async (req, res) => {
       const data = await json(req);
       const { name, args } = data;
+      if (!(name in methods)) {
+        throw createError(404, 'unknown method');
+      }
       const parsedArgs = args ? JSON.parse(args) : [];
       const result = Array.isArray(parsedArgs) ?
         await methods[name](...parsedArgs) :
