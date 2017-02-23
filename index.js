@@ -7,7 +7,11 @@ const {
 } = micro;
 
 module.exports = () => {
-  const methods = {};
+  const methods = {
+    methods: function () {
+      return Object.keys(this);
+    }
+  };
   return {
     server: micro(async (req, res) => {
       const data = await json(req);
