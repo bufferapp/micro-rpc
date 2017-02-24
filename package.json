@@ -1,7 +1,7 @@
 {
   "name": "@bufferapp/micro-rpc",
-  "version": "0.0.1",
-  "description": "Super lightweight rpc",
+  "version": "0.0.2",
+  "description": "Async RPC microservices made easy",
   "main": "index.js",
   "scripts": {
     "dev": "node --harmony-async-await dev"
