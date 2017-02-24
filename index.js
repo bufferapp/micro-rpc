@@ -3,29 +3,42 @@ const {
   send,
   json,
   createError,
-  sendError,
 } = micro;
 
 module.exports = () => {
-  const methods = {
-    methods: function () {
-      return Object.keys(this);
-    }
-  };
+  const methods = {};
   return {
     server: micro(async (req, res) => {
       const data = await json(req);
       const { name, args } = data;
+      if (name === 'methods') {
+        return send(
+          res,
+          200,
+          Object.keys(methods)
+            .map((name) => ({
+              name,
+              docs: methods[name].docs,
+            }))
+            .concat({
+              name: 'methods',
+              docs: 'list all available methods'
+            })
+        );
+      }
       if (!(name in methods)) {
         throw createError(404, 'unknown method');
       }
       const parsedArgs = args ? JSON.parse(args) : [];
       const result = Array.isArray(parsedArgs) ?
-        await methods[name](...parsedArgs) :
-        await methods[name](parsedArgs);
+        await methods[name].fn(...parsedArgs) :
+        await methods[name].fn(parsedArgs);
       send(res, 200, { result });
     }),
-    method: (name, fn) => methods[name] = fn,
+    method: (name, ...args) => methods[name] = {
+      fn: args[1] ? args[1] : args[0],
+      docs: args[1] ? args[0] : undefined,
+    },
     createError: ({ message, statusCode = 400}) => createError(statusCode, message),
   };
 };
