@@ -12,28 +12,30 @@ module.exports = () => {
       const data = await json(req);
       const { name, args } = data;
       if (name === 'methods') {
-        return send(
+        send(
           res,
           200,
-          Object.keys(methods)
-            .map((name) => ({
-              name,
-              docs: methods[name].docs,
-            }))
-            .concat({
-              name: 'methods',
-              docs: 'list all available methods'
-            })
+          {
+            result: Object.keys(methods)
+              .map((name) => ({
+                name,
+                docs: methods[name].docs,
+              }))
+              .concat({
+                name: 'methods',
+                docs: 'list all available methods'
+              })
+          }
         );
-      }
-      if (!(name in methods)) {
+      } else if (!(name in methods)) {
         throw createError(404, 'unknown method');
+      } else {
+        const parsedArgs = args ? JSON.parse(args) : [];
+        const result = Array.isArray(parsedArgs) ?
+          await methods[name].fn(...parsedArgs) :
+          await methods[name].fn(parsedArgs);
+        send(res, 200, { result });
       }
-      const parsedArgs = args ? JSON.parse(args) : [];
-      const result = Array.isArray(parsedArgs) ?
-        await methods[name].fn(...parsedArgs) :
-        await methods[name].fn(parsedArgs);
-      send(res, 200, { result });
     }),
     method: (name, ...args) => methods[name] = {
       fn: args[1] ? args[1] : args[0],

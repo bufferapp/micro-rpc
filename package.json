@@ -1,10 +1,10 @@
 {
-  "name": "micro-rpc",
+  "name": "@bufferapp/micro-rpc",
   "version": "0.0.1",
   "description": "Super lightweight rpc",
   "main": "index.js",
   "scripts": {
-    "test": "node --harmony-async-await test"
+    "dev": "node --harmony-async-await dev"
   },
   "repository": {
     "type": "git",
