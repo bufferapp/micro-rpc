@@ -1,14 +1,21 @@
 const micro = require('micro');
+const microCors = require('micro-cors');
 const {
   send,
   json,
   createError,
 } = micro;
 
-module.exports = () => {
+module.exports = (options = {}) => {
+  const cors = microCors({
+    allowMethods: options.allowMethods,
+    allowHeaders: options.allowHeaders,
+    maxAge: options.maxAge,
+    origin: options.origin,
+  });
   const methods = {};
   return {
-    server: micro(async (req, res) => {
+    server: micro(cors(async (req, res) => {
       const data = await json(req);
       const { name, args } = data;
       if (name === 'methods') {
@@ -36,7 +43,7 @@ module.exports = () => {
           await methods[name].fn(parsedArgs);
         send(res, 200, { result });
       }
-    }),
+    })),
     method: (name, ...args) => methods[name] = {
       fn: args[1] ? args[1] : args[0],
       docs: args[1] ? args[0] : undefined,

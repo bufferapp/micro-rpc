@@ -1,6 +1,6 @@
 {
   "name": "@bufferapp/micro-rpc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Async RPC microservices made easy",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/bufferapp/micro-rpc#readme",
   "dependencies": {
-    "micro": "^7.0.6"
+    "micro": "^7.0.6",
+    "micro-cors": "0.0.4"
   }
 }
