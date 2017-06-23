@@ -32,4 +32,4 @@ Document what a method does.
   reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
 }));
 
-server.listen(3000);
+module.exports = server;

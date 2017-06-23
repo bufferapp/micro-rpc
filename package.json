@@ -1,10 +1,10 @@
 {
   "name": "@bufferapp/micro-rpc",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Async RPC microservices made easy",
   "main": "index.js",
   "scripts": {
-    "dev": "node --harmony-async-await dev"
+    "dev": "micro dev"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,7 @@
     "url": "https://github.com/bufferapp/micro-rpc/issues"
   },
   "homepage": "https://github.com/bufferapp/micro-rpc#readme",
-  "dependencies": {
-    "micro": "^7.0.6",
-    "micro-cors": "0.0.4"
+  "devDependencies": {
+    "micro": "7.3.3"
   }
 }

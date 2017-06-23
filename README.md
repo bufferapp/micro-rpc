@@ -15,7 +15,7 @@ const { server, method } = MicroRPC();
 
 method('add', 'add two numbers' (a, b) => a + b);
 
-server.listen(3000);
+module.exports = server;
 ```
 
 Now use curl to call the `add` call (client coming soon):
@@ -85,14 +85,14 @@ Document what a method does.
 `,
 () => {});
 
-server.listen(3000);
+module.exports = server;
 ```
 
 ## API
 
 ### server
 
-A [Micro](https://github.com/zeit/micro) server instance
+An async function that can be served by [Micro](https://github.com/zeit/micro)
 
 ### method
 
