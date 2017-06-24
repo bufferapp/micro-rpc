@@ -4,42 +4,35 @@ const {
   createError,
 } = require('micro');
 
-module.exports = () => {
-  const methods = {};
-  return {
-    server: async (req, res) => {
-      const data = await json(req);
-      const { name, args } = data;
-      if (name === 'methods') {
-        send(
-          res,
-          200,
-          {
-            result: Object.keys(methods)
-              .map((name) => ({
-                name,
-                docs: methods[name].docs,
-              }))
-              .concat({
-                name: 'methods',
-                docs: 'list all available methods'
-              })
-          }
-        );
-      } else if (!(name in methods)) {
-        throw createError(404, 'unknown method');
-      } else {
-        const parsedArgs = args ? JSON.parse(args) : [];
-        const result = Array.isArray(parsedArgs) ?
-          await methods[name].fn(...parsedArgs) :
-          await methods[name].fn(parsedArgs);
-        send(res, 200, { result });
-      }
-    },
-    method: (name, ...args) => methods[name] = {
-      fn: args[1] ? args[1] : args[0],
-      docs: args[1] ? args[0] : undefined,
-    },
-    createError: ({ message, statusCode = 400}) => createError(statusCode, message),
-  };
+module.exports = {
+  rpc: (...methods) => async (req, res) => {
+    const data = await json(req);
+    const { name, args } = data;
+    const matchingMethod = methods.find((method) => method.name === name);
+    if (matchingMethod) {
+      const parsedArgs = args ? JSON.parse(args) : [];
+      const result = Array.isArray(parsedArgs) ?
+        await matchingMethod.fn(...parsedArgs) :
+        await matchingMethod.fn(parsedArgs);
+      send(res, 200, { result });
+    } else if (name === 'methods') {
+      send(res, 200, {
+        result: methods.map((method) => ({
+          name: method.name,
+          doc: method.doc,
+        })).concat({
+          name: 'methods',
+          docs: 'list all available methods',
+        }),
+      });
+    } else {
+      throw createError(404, 'unknown method');
+    }
+  },
+  method: (name, ...args) => ({
+    name,
+    fn: args[1] ? args[1] : args[0],
+    docs: args[1] ? args[0] : undefined,
+  }),
+  createError: ({ message, statusCode = 400}) => createError(statusCode, message),
 };

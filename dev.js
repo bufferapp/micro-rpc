@@ -1,35 +1,27 @@
-const MicroRPC = require('./index');
-const { server, method, createError } = MicroRPC();
+const { rpc, method, createError } = require('./index');
+module.exports = rpc(
+  method('add', (a, b) => a + b),
+  method('addAsync', (a, b) => new Promise((resolve) => {
+    resolve(a + b);
+  })),
+  method('addItems', ({ a, b }) => a + b),
+  method('addItemsAsync', ({ a, b }) => new Promise((resolve) => {
+    resolve(a + b);
+  })),
+  method('throwError', () => {
+    throw createError({ message: 'I\'m sorry I can\'t do that'});
+  }),
 
-method('add', (a, b) => a + b);
+  method('throwErrorAsync', () => new Promise((resolve, reject) => {
+    reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
+  })),
+  method('documentation',
+  `
+  # documentation
 
-method('addAsync', (a, b) => new Promise((resolve) => {
-  resolve(a + b);
-}));
-
-
-method('addItems', ({ a, b }) => a + b);
-
-method('addItemsAsync', ({ a, b }) => new Promise((resolve) => {
-  resolve(a + b);
-}));
-
-method('throwError', () => {
-  throw createError({ message: 'I\'m sorry I can\'t do that'});
-});
-
-method('throwErrorAsync', () => new Promise((resolve, reject) => {
-  reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
-}));
-
-method('documentation',
-`
-# documentation
-
-Document what a method does.
-`,
-() => new Promise((resolve, reject) => {
-  reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
-}));
-
-module.exports = server;
+  Document what a method does.
+  `,
+  () => new Promise((resolve, reject) => {
+    reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
+  }))
+);

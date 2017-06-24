@@ -9,16 +9,33 @@ Made with [Micro](https://github.com/zeit/micro)
 Create a RPC method to add 2 numbers:
 
 ```js
-const MicroRPC = require('@bufferapp/micro-rpc');
-
-const { server, method } = MicroRPC();
-
-method('add', 'add two numbers' (a, b) => a + b);
-
-module.exports = server;
+// index.js
+const { rpc, method, createError } = require('@bufferapp/micro-rpc');
+module.exports = rpc(
+  method('add', (a, b) => a + b)
+);
 ```
 
-Now use curl to call the `add` call (client coming soon):
+Start the server
+
+```sh
+micro
+```
+
+Use the Micro RPC Client: https://github.com/bufferapp/micro-rpc-client to run the `add` method
+
+```js
+const RPCClient = require('@bufferapp/micro-rpc-client');
+
+const rpc = new RPCClient({
+  serverUrl: 'https://localhost:3000',
+});
+
+rpc.call('add', 2, 2)
+  .then(result => console.log(result)); // output: 4
+```
+
+Or you can use curl to call the `add` method:
 
 ```sh
 curl -H "Content-Type: application/json" -X POST -d '{"name": "add", "args": "[2, 3]"}' localhost:3000 | python -m json.tool
@@ -47,52 +64,51 @@ curl -H "Content-Type: application/json" -X POST -d '{"name": "methods"}' localh
 # }
 ```
 
-
 ## Usage
 
 Here's a few examples of how to hook up the handler methods:
 
 ```js
-const MicroRPC = require('@bufferapp/micro-rpc');
+const { rpc, method, createError } = require('@bufferapp/micro-rpc');
+module.exports = rpc(
+  method('add', (a, b) => a + b),
+  method('addAsync', (a, b) => new Promise((resolve) => {
+    resolve(a + b);
+  })),
+  method('addItems', ({ a, b }) => a + b),
+  method('addItemsAsync', ({ a, b }) => new Promise((resolve) => {
+    resolve(a + b);
+  })),
+  method('throwError', () => {
+    throw createError({ message: 'I\'m sorry I can\'t do that'});
+  }),
 
-const { server, method, createError } = MicroRPC();
+  method('throwErrorAsync', () => new Promise((resolve, reject) => {
+    reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
+  })),
+  method('documentation',
+  `
+  # documentation
 
-method('add', (a, b) => a + b);
-
-method('addAsync', (a, b) => new Promise((resolve) => {
-  resolve(a + b);
-}));
-
-method('addItems', ({ a, b }) => a + b);
-
-method('addItemsAsync', ({ a, b }) => new Promise((resolve) => {
-  resolve(a + b);
-}));
-
-method('throwError', () => {
-  throw createError({ message: 'I\'m sorry I can\'t do that'});
-});
-
-method('throwErrorAsync', () => new Promise((resolve, reject) => {
-  reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
-}));
-
-method('documentation',
-`
-# documentation
-
-Document what a method does.
-`,
-() => {});
-
-module.exports = server;
+  Document what a method does.
+  `,
+  () => new Promise((resolve, reject) => {
+    reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
+  }))
+);
 ```
 
 ## API
 
-### server
+### rpc
 
-An async function that can be served by [Micro](https://github.com/zeit/micro)
+An async function that can be served by [Micro](https://github.com/zeit/micro), takes a bunch of methods as arguments.
+
+```js
+rpc(...methods)
+```
+
+**...methods** - _method_ - micro rpc method (see below)
 
 ### method
 
