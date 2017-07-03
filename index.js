@@ -19,7 +19,7 @@ module.exports = {
       send(res, 200, {
         result: methods.map((method) => ({
           name: method.name,
-          doc: method.doc,
+          docs: method.docs,
         })).concat({
           name: 'methods',
           docs: 'list all available methods',
