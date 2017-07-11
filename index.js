@@ -11,10 +11,15 @@ module.exports = {
     const matchingMethod = methods.find((method) => method.name === name);
     if (matchingMethod) {
       const parsedArgs = args ? JSON.parse(args) : [];
-      const result = Array.isArray(parsedArgs) ?
-        await matchingMethod.fn(...parsedArgs) :
-        await matchingMethod.fn(parsedArgs);
-      send(res, 200, { result });
+      try {
+        const result = Array.isArray(parsedArgs) ?
+          await matchingMethod.fn(...parsedArgs) :
+          await matchingMethod.fn(parsedArgs);
+        send(res, 200, { result });
+      } catch (err) {
+        res.statusMessage = err.message;
+        throw createError(err.statusCode || 500, err.message)
+      }
     } else if (name === 'methods') {
       send(res, 200, {
         result: methods.map((method) => ({
@@ -26,7 +31,9 @@ module.exports = {
         }),
       });
     } else {
-      throw createError(404, 'unknown method');
+      const errorMessage = 'unknown method';
+      res.statusMessage = errorMessage;
+      throw createError(404, errorMessage);
     }
   },
   method: (name, ...args) => ({
