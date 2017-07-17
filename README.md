@@ -132,3 +132,16 @@ createError({ message, statusCode = 400})
 
 **message** - _string_ - error message to return  
 **statusCode** - _string_ - optional HTTP status code (default to 400)
+
+## Request and Response Objects
+
+Request and response objects are always passed along as the last two arguments in case they're needed.
+
+```js
+method('addWithSession', (a, b, req, res) => {
+  if (!req.session) {
+    throw createError({ message: 'a session is needed to add numbers', statusCode: 401});
+  }
+  return a + b;
+};
+```

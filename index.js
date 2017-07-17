@@ -13,8 +13,8 @@ module.exports = {
       const parsedArgs = args ? JSON.parse(args) : [];
       try {
         const result = Array.isArray(parsedArgs) ?
-          await matchingMethod.fn(...parsedArgs) :
-          await matchingMethod.fn(parsedArgs);
+          await matchingMethod.fn(...parsedArgs, req, res) :
+          await matchingMethod.fn(parsedArgs, req, res);
         send(res, 200, { result });
       } catch (err) {
         res.statusMessage = err.message;
