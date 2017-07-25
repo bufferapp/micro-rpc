@@ -23,5 +23,8 @@ module.exports = rpc(
   `,
   () => new Promise((resolve, reject) => {
     reject(createError({ message: 'Something is broke internally', statusCode: 500 }));
-  }))
+  })),
+  method('unhandledError', () => {
+    throw new Error('Not expected');
+  })
 );

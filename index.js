@@ -17,8 +17,11 @@ module.exports = {
           await matchingMethod.fn(parsedArgs, req, res);
         send(res, 200, { result });
       } catch (err) {
-        res.statusMessage = err.message;
-        throw createError(err.statusCode || 500, err.message)
+        if (err.statusCode) {
+          res.statusMessage = err.message;
+          throw createError(err.statusCode, err.message)
+        }
+        throw err;
       }
     } else if (name === 'methods') {
       send(res, 200, {
