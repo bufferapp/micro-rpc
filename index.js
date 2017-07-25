@@ -22,9 +22,10 @@ module.exports = {
           send(res, err.statusCode, {
             error: err.message
           });
+        } else {
+          // unhandled exception
+          throw err;
         }
-        // unhandled exception
-        throw err;
       }
     } else if (name === 'methods') {
       send(res, 200, {
@@ -37,9 +38,9 @@ module.exports = {
         }),
       });
     } else {
-      const errorMessage = 'unknown method';
-      res.statusMessage = errorMessage;
-      throw createError(404, errorMessage);
+      send(res, 404, {
+        error: 'unknown method'
+      });
     }
   },
   method: (name, ...args) => ({
