@@ -17,10 +17,13 @@ module.exports = {
           await matchingMethod.fn(parsedArgs, req, res);
         send(res, 200, { result });
       } catch (err) {
-        if (err.statusCode) {
-          res.statusMessage = err.message;
-          throw createError(err.statusCode, err.message)
+        // error was handled
+        if (err.handled) {
+          send(res, err.statusCode, {
+            error: err.message
+          });
         }
+        // unhandled exception
         throw err;
       }
     } else if (name === 'methods') {
@@ -44,5 +47,9 @@ module.exports = {
     fn: args[1] ? args[1] : args[0],
     docs: args[1] ? args[0] : undefined,
   }),
-  createError: ({ message, statusCode = 400}) => createError(statusCode, message),
+  createError: ({ message, statusCode = 400 }) => {
+    const err = createError(statusCode, message);
+    err.handled = true;
+    return err;
+  },
 };
