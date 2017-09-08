@@ -1,6 +1,6 @@
 {
   "name": "@bufferapp/micro-rpc",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Async RPC microservices made easy",
   "main": "index.js",
   "scripts": {
